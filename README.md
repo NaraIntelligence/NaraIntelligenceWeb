@@ -1,25 +1,117 @@
-# CODING AGENTS: READ THIS FIRST
+# Nara Intelligence — web
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+Landing page de Nara Intelligence. Next.js 16 (App Router) · React 19 ·
+TypeScript · CSS plano, sin framework de estilos.
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+Implementada a partir del prototipo de Claude Design que queda archivado en
+`design/` como referencia.
 
-## What you should do — IMPORTANT
+```bash
+npm install
+npm run dev      # http://localhost:3000
+npm run build
+npm run start
+npm run lint
+```
 
-**Read the chat transcripts first.** There are 1 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+Requiere Node 18 o superior.
 
-**Read `project/Nara Intelligence - Landing.dc.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+## Flujo de trabajo
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+`main` es la rama de producción: **todo lo que entra en `main` se despliega
+solo en Vercel**. Los cambios llegan por Pull Request, así que cada uno tiene
+su propia URL de preview antes de tocar producción.
 
-## About the design files
+1. Claude abre una PR con el cambio.
+2. Vercel publica un preview y deja la URL como comentario en la PR.
+3. Revisas el preview. Si está bien, haces *Merge* → se va a producción.
+4. Para retoques pequeños tuyos: `git pull` en VS Code, editas, commit y push.
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+## Estructura
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+```
+src/
+  app/
+    layout.tsx        Fuentes, metadata, <LangProvider>
+    page.tsx          Composición de secciones
+    globals.css       Todo el estilado — los tokens están arriba del todo
+  components/         Un archivo por sección
+  lib/
+    copy.ts           Copy ES + EN, lista de partners, email de contacto
+    lang-context.tsx  Estado de idioma (inglés por defecto)
+    use-scroll-progress.ts
+    use-muted-autoplay.ts
+public/assets/        Logo + los tres vídeos de agentes
+design/               Prototipo original de Claude Design (solo referencia)
+```
 
-## Bundle contents
+## Dónde tocar cada cosa
 
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `Nara Intelligence página web` project files (HTML prototypes, assets, components)
+| Qué cambiar | Dónde |
+| --- | --- |
+| Cualquier texto (ES o EN) | `src/lib/copy.ts` |
+| Colores, tamaños, espaciados | `src/app/globals.css` (tokens al principio) |
+| Lista de partners | `src/lib/copy.ts` → `PARTNERS` |
+| Email de contacto | `src/lib/copy.ts` → `CONTACT_EMAIL` |
+
+## Notas de implementación
+
+**Idioma.** El inglés es el idioma por defecto y es lo que renderiza el
+servidor. La elección del visitante se guarda en `localStorage` y se aplica en
+cliente vía `useSyncExternalStore`, así que no hay desajuste de hidratación ni
+parpadeo de idioma. Ningún texto está escrito a pelo en un componente.
+
+**Scroll.** Dos secciones van dirigidas por scroll, ambas con
+`useScrollProgress` (limitado por `requestAnimationFrame` para que no compita
+con los vídeos):
+
+- *Under the hood* — pista de 250vh con panel sticky. El progreso del scroll
+  mueve un `clip-path` que va borrando la carcasa exterior del androide de
+  abajo arriba para dejar ver el interior.
+- *How it works* — pista de 400vh; cada uno de los cuatro pasos ocupa un
+  cuarto. El paso activo se deriva de la posición de scroll durante el render
+  (sin estado ni efecto). Los vídeos quedan montados para que el cambio sea un
+  crossfade de 1s, pero solo se reproduce el activo.
+
+**Autoplay de vídeo.** `muted` se asigna como *propiedad* del DOM antes de
+`play()`, y `play()` se reintenta en `canplay`. Ambas cosas son necesarias para
+la política de autoplay de Chrome: el atributo `muted` del HTML/JSX no basta.
+Ver `src/lib/use-muted-autoplay.ts`.
+
+**Layout.** `overflow-x: clip` en `.page`, nunca `hidden` — `hidden` en un
+ancestro rompe silenciosamente `position: sticky` en las dos secciones de
+scroll.
+
+## Assets pendientes
+
+Cinco visuales siguen como placeholders (`<ImagePlaceholder>`) porque todavía
+no hay render para ellos. Cada uno es un cambio directo: el layout y el
+comportamiento de scroll de alrededor no cambian.
+
+| Dónde | Componente | Falta |
+| --- | --- | --- |
+| Under the hood, capa de atrás | `Reveal.tsx` | Render del interior del androide |
+| Under the hood, capa de delante | `Reveal.tsx` | Render del exterior del androide |
+| Paso 03 — Development | `HowItWorks.tsx` (`STEP_VIDEOS[2]`) | Vídeo |
+| Paso 04 — Flexible payment | `HowItWorks.tsx` (`STEP_VIDEOS[3]`) | Vídeo |
+| Sección Company | `About.tsx` | Imagen de equipo/agente |
+
+Para los dos vídeos de pasos: deja los archivos en `public/assets/` y rellena
+los `null` de `STEP_VIDEOS` — el crossfade y el play/pause ya están resueltos.
+
+La cinta de partners renderiza los nombres como texto. Durante el diseño nunca
+se consiguieron los logos oficiales; si aparecen, sustituye el `<span>` de
+`PartnerMarquee.tsx` por `<Image>` y mantén la estructura de dos grupos para
+que el bucle de `-50%` siga siendo continuo.
+
+## Verificación
+
+Comprobado en Chromium a 360/390/480/640/820/1440px en los dos idiomas: sin
+desbordamiento horizontal, el nav cabe en todos los anchos, las dos secciones
+de scroll siguen el progreso correctamente y los vídeos de los pasos reciben
+`play()`/`pause()` en el orden debido.
+
+El Chromium del contenedor donde se desarrolló no trae decodificador H.264, así
+que los `.mp4` salen en negro *solo ahí*; los elementos, las llamadas de
+autoplay y el crossfade se verificaron instrumentando `HTMLMediaElement`.
+Conviene mirar los vídeos en un navegador real.
