@@ -26,6 +26,9 @@ export function Nav() {
           <a className="nav__link" href="#how-it-works">
             {t.nav.how}
           </a>
+          <a className="nav__link" href="#products">
+            {t.nav.products}
+          </a>
           <a className="nav__link" href="#company">
             {t.nav.company}
           </a>

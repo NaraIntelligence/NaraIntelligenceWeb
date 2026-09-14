@@ -6,6 +6,7 @@ import { HowItWorks } from "@/components/HowItWorks";
 import { Loader } from "@/components/Loader";
 import { Nav } from "@/components/Nav";
 import { PartnerMarquee } from "@/components/PartnerMarquee";
+import { Products } from "@/components/Products";
 import { Reveal } from "@/components/Reveal";
 import { SkipLink } from "@/components/SkipLink";
 
@@ -29,6 +30,7 @@ export default function Page() {
           <PartnerMarquee />
           <Reveal />
           <HowItWorks />
+          <Products />
           <About />
           <Contact />
         </main>

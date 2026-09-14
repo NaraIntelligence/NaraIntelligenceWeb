@@ -21,6 +21,7 @@ export function Footer() {
         </div>
         <nav className="footer__links" aria-label="Footer">
           <a href="#how-it-works">{t.nav.how}</a>
+          <a href="#products">{t.nav.products}</a>
           <a href="#company">{t.nav.company}</a>
           <a href="#contact">{t.nav.contact}</a>
         </nav>

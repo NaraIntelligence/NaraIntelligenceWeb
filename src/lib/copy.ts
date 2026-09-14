@@ -4,9 +4,29 @@ export const LANGS: Lang[] = ["en", "es"];
 export const DEFAULT_LANG: Lang = "en";
 
 type Step = { title: string; body: string };
+type Department = "dev" | "finance" | "hr";
+type DirectorAgent = {
+  name: string;
+  role: string;
+  department: Department;
+  description: string;
+  manages: string[];
+};
+type EmployeeAgent = {
+  name: string;
+  role: string;
+  department: Department;
+  description: string;
+};
 
 export type Copy = {
-  nav: { how: string; company: string; contact: string; cta: string };
+  nav: {
+    how: string;
+    products: string;
+    company: string;
+    contact: string;
+    cta: string;
+  };
   hero: {
     welcome: string;
     headline: string;
@@ -23,6 +43,20 @@ export type Copy = {
     caption: string;
   };
   stepList: Step[];
+  products: {
+    kicker: string;
+    heading: string;
+    subheading: string;
+    directorsLabel: string;
+    directorsNote: string;
+    employeesLabel: string;
+    employeesNote: string;
+    directorBadge: string;
+    managesLabel: string;
+  };
+  departments: Record<Department, string>;
+  directorAgents: DirectorAgent[];
+  employeeAgents: EmployeeAgent[];
   about: {
     kicker: string;
     heading: string;
@@ -48,6 +82,7 @@ export const COPY: Record<Lang, Copy> = {
   en: {
     nav: {
       how: "How it works",
+      products: "Products",
       company: "Company",
       contact: "Contact",
       cta: "Request info",
@@ -89,6 +124,90 @@ export const COPY: Record<Lang, Copy> = {
         body: "Subscription, pay-per-result, or whatever model fits your business.",
       },
     ],
+    products: {
+      kicker: "Products",
+      heading: "Meet your new team.",
+      subheading:
+        "Every deployment starts with a Director — a senior agent that owns a function and manages a team of specialist agents underneath it.",
+      directorsLabel: "Director agents",
+      directorsNote:
+        "Higher autonomy, higher investment — they own outcomes and manage the specialists below them.",
+      employeesLabel: "Employee agents",
+      employeesNote:
+        "Focused specialists that execute the specific tasks their Director assigns.",
+      directorBadge: "Director",
+      managesLabel: "Manages",
+    },
+    departments: {
+      dev: "Development",
+      finance: "Finance",
+      hr: "HR",
+    },
+    directorAgents: [
+      {
+        name: "Diego",
+        role: "Development Director",
+        department: "dev",
+        description:
+          "Owns the engineering roadmap and reviews everything his team ships.",
+        manages: ["Mateo", "Lucía"],
+      },
+      {
+        name: "Sofía",
+        role: "Finance Director",
+        department: "finance",
+        description:
+          "Keeps the books straight and signs off on every financial report.",
+        manages: ["Valentina", "Andrés"],
+      },
+      {
+        name: "Elena",
+        role: "HR Director",
+        department: "hr",
+        description:
+          "Runs people operations end-to-end, from hiring to onboarding.",
+        manages: ["Camila", "Tomás"],
+      },
+    ],
+    employeeAgents: [
+      {
+        name: "Mateo",
+        role: "Code Review Agent",
+        department: "dev",
+        description:
+          "Reviews every pull request against your team's standards, 24/7.",
+      },
+      {
+        name: "Lucía",
+        role: "QA Agent",
+        department: "dev",
+        description: "Runs regression tests before anything reaches production.",
+      },
+      {
+        name: "Valentina",
+        role: "Invoicing Agent",
+        department: "finance",
+        description: "Generates and sends invoices the moment a deal closes.",
+      },
+      {
+        name: "Andrés",
+        role: "Expense Reports Agent",
+        department: "finance",
+        description: "Categorizes receipts and flags anything out of policy.",
+      },
+      {
+        name: "Camila",
+        role: "Recruiting Agent",
+        department: "hr",
+        description: "Screens resumes and schedules interviews for open roles.",
+      },
+      {
+        name: "Tomás",
+        role: "Onboarding Agent",
+        department: "hr",
+        description: "Walks new hires through setup on day one, every time.",
+      },
+    ],
     about: {
       kicker: "Who we are",
       heading: "The first company in Spain built on a workforce of agents.",
@@ -116,6 +235,7 @@ export const COPY: Record<Lang, Copy> = {
   es: {
     nav: {
       how: "Cómo funciona",
+      products: "Productos",
       company: "Compañía",
       contact: "Contacto",
       cta: "Solicitar información",
@@ -155,6 +275,91 @@ export const COPY: Record<Lang, Copy> = {
       {
         title: "Pago flexible",
         body: "Suscripción, por resultado o el modelo que mejor se adapte a tu negocio.",
+      },
+    ],
+    products: {
+      kicker: "Productos",
+      heading: "Conocé a tu nuevo equipo.",
+      subheading:
+        "Cada despliegue empieza con un Director: un agente senior que lidera un área y gestiona a un equipo de agentes especialistas debajo suyo.",
+      directorsLabel: "Agentes directores",
+      directorsNote:
+        "Mayor autonomía, mayor inversión: responden por los resultados y gestionan a los especialistas a su cargo.",
+      employeesLabel: "Agentes empleados",
+      employeesNote:
+        "Especialistas enfocados que ejecutan las tareas específicas que les asigna su Director.",
+      directorBadge: "Director",
+      managesLabel: "Gestiona a",
+    },
+    departments: {
+      dev: "Desarrollo",
+      finance: "Finanzas",
+      hr: "RRHH",
+    },
+    directorAgents: [
+      {
+        name: "Diego",
+        role: "Director de Desarrollo",
+        department: "dev",
+        description:
+          "Define el roadmap de ingeniería y revisa todo lo que entrega su equipo.",
+        manages: ["Mateo", "Lucía"],
+      },
+      {
+        name: "Sofía",
+        role: "Directora de Finanzas",
+        department: "finance",
+        description:
+          "Mantiene las cuentas en orden y aprueba cada reporte financiero.",
+        manages: ["Valentina", "Andrés"],
+      },
+      {
+        name: "Elena",
+        role: "Directora de RRHH",
+        department: "hr",
+        description:
+          "Gestiona todo el ciclo de personas, desde la contratación hasta el onboarding.",
+        manages: ["Camila", "Tomás"],
+      },
+    ],
+    employeeAgents: [
+      {
+        name: "Mateo",
+        role: "Agente de Code Review",
+        department: "dev",
+        description:
+          "Revisa cada pull request contra los estándares de tu equipo, 24/7.",
+      },
+      {
+        name: "Lucía",
+        role: "Agente de QA",
+        department: "dev",
+        description:
+          "Corre pruebas de regresión antes de que algo llegue a producción.",
+      },
+      {
+        name: "Valentina",
+        role: "Agente de Facturación",
+        department: "finance",
+        description: "Genera y envía facturas apenas se cierra un trato.",
+      },
+      {
+        name: "Andrés",
+        role: "Agente de Gastos",
+        department: "finance",
+        description: "Categoriza recibos y marca lo que se sale de política.",
+      },
+      {
+        name: "Camila",
+        role: "Agente de Reclutamiento",
+        department: "hr",
+        description: "Filtra CVs y agenda entrevistas para las posiciones abiertas.",
+      },
+      {
+        name: "Tomás",
+        role: "Agente de Onboarding",
+        department: "hr",
+        description: "Guía a cada nueva contratación en su primer día, siempre.",
       },
     ],
     about: {
