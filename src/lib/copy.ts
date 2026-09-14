@@ -184,22 +184,26 @@ export const COPY: Record<Lang, Copy> = {
   },
 };
 
-/** Partner wordmarks for the infinite marquee, in the order the user listed them. */
+/**
+ * Partner logos for the infinite marquee, in the order the user listed them.
+ * Each `logo` points to a PNG in /public/logos/ — drop the matching file
+ * there and it picks up automatically, no code changes needed.
+ */
 export const PARTNERS = [
-  "Anthropic",
-  "OpenAI",
-  "Docker",
-  "Supabase",
-  "Render",
-  "Railway",
-  "Python",
-  "Vercel",
-  "n8n",
-  "WhisperFlow",
-  "GitHub",
-  "Notion",
-  "Apollo.io",
-  "Stripe",
+  { name: "Anthropic", logo: "/logos/anthropic.png" },
+  { name: "OpenAI", logo: "/logos/openai.png" },
+  { name: "Docker", logo: "/logos/docker.png" },
+  { name: "Supabase", logo: "/logos/supabase.png" },
+  { name: "Render", logo: "/logos/render.png" },
+  { name: "Railway", logo: "/logos/railway.png" },
+  { name: "Python", logo: "/logos/python.png" },
+  { name: "Vercel", logo: "/logos/vercel.png" },
+  { name: "n8n", logo: "/logos/n8n.png" },
+  { name: "WhisperFlow", logo: "/logos/whisperflow.png" },
+  { name: "GitHub", logo: "/logos/github.png" },
+  { name: "Notion", logo: "/logos/notion.png" },
+  { name: "Apollo.io", logo: "/logos/apollo.png" },
+  { name: "Stripe", logo: "/logos/stripe.png" },
 ] as const;
 
 export const CONTACT_EMAIL = "hola@naraintelligence.ai";
