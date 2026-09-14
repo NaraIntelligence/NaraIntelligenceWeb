@@ -6,60 +6,89 @@ import type { Copy } from "@/lib/copy";
 type DirectorAgent = Copy["directorAgents"][number];
 type EmployeeAgent = Copy["employeeAgents"][number];
 
-/** Each card sticks a little lower than the one before it, so as you scroll
- * the next card slides up and covers the previous one, leaving a sliver of
- * it peeking out above — the "stacked deck" effect. */
-const STACK_STEP = 18;
-const STACK_BASE = 16;
-
-function AgentCard({
+function PosterCard({
   agent,
-  index,
   department,
   tier,
   directorBadge,
   managesLabel,
+  hidden = false,
 }: {
   agent: DirectorAgent | EmployeeAgent;
-  index: number;
   department: string;
   tier: "director" | "employee";
   directorBadge: string;
   managesLabel: string;
+  hidden?: boolean;
 }) {
   const manages = "manages" in agent ? agent.manages : null;
 
   return (
     <article
-      className={`agent-card agent-card--${tier}`}
-      style={{
-        top: `calc(var(--nav-height) + ${STACK_BASE + index * STACK_STEP}px)`,
-        zIndex: index + 1,
-      }}
+      className={`poster-card poster-card--${tier}`}
+      aria-hidden={hidden || undefined}
     >
-      {tier === "director" && (
-        <span className="agent-card__badge">{directorBadge}</span>
-      )}
-
-      <div className="agent-card__top">
-        <span className="agent-card__avatar" aria-hidden>
+      <div className="poster-card__art">
+        <span className="poster-card__mark" aria-hidden>
           {agent.name.charAt(0)}
         </span>
-        <div className="agent-card__id">
-          <p className="agent-card__name">{agent.name}</p>
-          <p className="agent-card__role">{agent.role}</p>
-        </div>
-        <span className="agent-card__dept">{department}</span>
+        <span className="poster-card__dept">{department}</span>
+        {tier === "director" && (
+          <span className="poster-card__badge">{directorBadge}</span>
+        )}
       </div>
 
-      <p className="agent-card__desc">{agent.description}</p>
-
-      {manages && manages.length > 0 && (
-        <p className="agent-card__manages">
-          {managesLabel} {manages.join(", ")}
-        </p>
-      )}
+      <div className="poster-card__info">
+        <p className="poster-card__name">{agent.name}</p>
+        <p className="poster-card__role">{agent.role}</p>
+        <p className="poster-card__desc">{agent.description}</p>
+        {manages && manages.length > 0 && (
+          <p className="poster-card__manages">
+            {managesLabel} {manages.join(", ")}
+          </p>
+        )}
+      </div>
     </article>
+  );
+}
+
+function PosterRail({
+  agents,
+  departments,
+  tier,
+  directorBadge,
+  managesLabel,
+  reverse = false,
+}: {
+  agents: (DirectorAgent | EmployeeAgent)[];
+  departments: Copy["departments"];
+  tier: "director" | "employee";
+  directorBadge: string;
+  managesLabel: string;
+  reverse?: boolean;
+}) {
+  const cards = (hidden: boolean) =>
+    agents.map((agent) => (
+      <PosterCard
+        key={`${hidden ? "dup-" : ""}${agent.name}`}
+        agent={agent}
+        department={departments[agent.department]}
+        tier={tier}
+        directorBadge={directorBadge}
+        managesLabel={managesLabel}
+        hidden={hidden}
+      />
+    ));
+
+  return (
+    <div className="poster-rail">
+      <div
+        className={`poster-track${reverse ? " poster-track--reverse" : ""}`}
+      >
+        {cards(false)}
+        {cards(true)}
+      </div>
+    </div>
   );
 }
 
@@ -81,19 +110,13 @@ export function Products() {
           <h3 className="agent-group__label">{t.products.directorsLabel}</h3>
           <p className="agent-group__note">{t.products.directorsNote}</p>
         </div>
-        <div className="agent-stack shell">
-          {t.directorAgents.map((agent, i) => (
-            <AgentCard
-              key={agent.name}
-              agent={agent}
-              index={i}
-              department={t.departments[agent.department]}
-              tier="director"
-              directorBadge={t.products.directorBadge}
-              managesLabel={t.products.managesLabel}
-            />
-          ))}
-        </div>
+        <PosterRail
+          agents={t.directorAgents}
+          departments={t.departments}
+          tier="director"
+          directorBadge={t.products.directorBadge}
+          managesLabel={t.products.managesLabel}
+        />
       </div>
 
       <div className="agent-group">
@@ -101,19 +124,14 @@ export function Products() {
           <h3 className="agent-group__label">{t.products.employeesLabel}</h3>
           <p className="agent-group__note">{t.products.employeesNote}</p>
         </div>
-        <div className="agent-stack shell">
-          {t.employeeAgents.map((agent, i) => (
-            <AgentCard
-              key={agent.name}
-              agent={agent}
-              index={i}
-              department={t.departments[agent.department]}
-              tier="employee"
-              directorBadge={t.products.directorBadge}
-              managesLabel={t.products.managesLabel}
-            />
-          ))}
-        </div>
+        <PosterRail
+          agents={t.employeeAgents}
+          departments={t.departments}
+          tier="employee"
+          directorBadge={t.products.directorBadge}
+          managesLabel={t.products.managesLabel}
+          reverse
+        />
       </div>
     </section>
   );
