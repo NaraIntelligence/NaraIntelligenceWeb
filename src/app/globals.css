@@ -530,6 +530,12 @@ p {
   height: 32px;
   width: auto;
   object-fit: contain;
+  filter: grayscale(1) opacity(0.55);
+  transition: filter 0.2s ease;
+}
+
+.partners__logo:hover {
+  filter: grayscale(0) opacity(1);
 }
 
 /* ==========================================================================
