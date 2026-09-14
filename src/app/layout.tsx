@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { PageShell } from "@/components/PageShell";
 import { LangProvider } from "@/lib/lang-context";
+import { RequestInfoProvider } from "@/lib/request-info-context";
 import "./globals.css";
 
 // Fallback for machines without the Apple system faces, so the type reads
@@ -38,7 +40,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        <LangProvider>{children}</LangProvider>
+        <LangProvider>
+          <RequestInfoProvider>
+            <PageShell>{children}</PageShell>
+          </RequestInfoProvider>
+        </LangProvider>
       </body>
     </html>
   );

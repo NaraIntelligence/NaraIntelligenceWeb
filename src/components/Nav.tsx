@@ -1,15 +1,18 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useLang } from "@/lib/lang-context";
+import { useRequestInfo } from "@/lib/request-info-context";
 import { FlagES, FlagGB } from "./icons";
 
 export function Nav() {
   const { lang, t, setLang } = useLang();
+  const { open } = useRequestInfo();
 
   return (
     <header className="nav">
-      <a className="nav__brand" href="#top">
+      <Link className="nav__brand" href="/">
         <Image
           className="nav__logo"
           src="/assets/na-logo.jpg"
@@ -19,22 +22,23 @@ export function Nav() {
           priority
         />
         <span className="nav__wordmark">Nara Intelligence</span>
-      </a>
+      </Link>
 
       <nav className="nav__right" aria-label="Primary">
         <div className="nav__links">
-          <a className="nav__link" href="#how-it-works">
+          {/* Root-relative so they still resolve from /what-is-nara. */}
+          <Link className="nav__link" href="/#how-it-works">
             {t.nav.how}
-          </a>
-          <a className="nav__link" href="#products">
+          </Link>
+          <Link className="nav__link" href="/#products">
             {t.nav.products}
-          </a>
-          <a className="nav__link" href="#company">
-            {t.nav.company}
-          </a>
-          <a className="nav__link" href="#contact">
+          </Link>
+          <Link className="nav__link" href="/what-is-nara">
+            {t.nav.what}
+          </Link>
+          <Link className="nav__link" href="/#contact">
             {t.nav.contact}
-          </a>
+          </Link>
         </div>
 
         <div className="lang" role="group" aria-label="Language">
@@ -60,9 +64,13 @@ export function Nav() {
           </button>
         </div>
 
-        <a className="btn btn--solid btn--sm" href="#contact">
+        <button
+          type="button"
+          className="btn btn--solid btn--sm"
+          onClick={() => open()}
+        >
           {t.nav.cta}
-        </a>
+        </button>
       </nav>
     </header>
   );

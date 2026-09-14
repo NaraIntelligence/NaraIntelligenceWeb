@@ -3,9 +3,11 @@
 import { useRef } from "react";
 import { useLang } from "@/lib/lang-context";
 import { useMutedAutoplay } from "@/lib/use-muted-autoplay";
+import { useRequestInfo } from "@/lib/request-info-context";
 
 export function Hero() {
   const { t } = useLang();
+  const { open } = useRequestInfo();
   const videoRef = useRef<HTMLVideoElement>(null);
   useMutedAutoplay(videoRef, true);
 
@@ -15,9 +17,13 @@ export function Hero() {
         <h1 className="hero__title">{t.hero.headline}</h1>
         <p className="hero__subtitle">{t.hero.subtitle}</p>
         <div className="hero__actions">
-          <a className="btn btn--solid btn--md" href="#contact">
+          <button
+            type="button"
+            className="btn btn--solid btn--md"
+            onClick={() => open()}
+          >
             {t.hero.ctaPrimary}
-          </a>
+          </button>
           <a className="btn btn--outline btn--md" href="#how-it-works">
             {t.hero.ctaSecondary}
           </a>
