@@ -16,6 +16,35 @@ npm run lint
 
 Requiere Node 18 o superior.
 
+## Variables de entorno
+
+Copia `.env.example` a `.env.local` para desarrollo. En Vercel van en
+*Settings → Environment Variables*, marcadas para **Production** y **Preview**.
+
+| Variable | Obligatoria | Para qué |
+| --- | --- | --- |
+| `RESEND_API_KEY` | Sí* | API key de [Resend](https://resend.com/api-keys) con permiso de envío. |
+| `LEAD_TO_EMAIL` | Sí* | Buzón donde llegan los leads (`admin@naraintelligences.com`). Admite varios separados por comas. |
+| `LEAD_FROM_EMAIL` | Sí* | Remitente, p. ej. `Nara Intelligence <web@naraintelligences.com>`. Su dominio tiene que estar verificado en Resend. |
+| `N8N_WEBHOOK_URL` | No | Si existe, cada lead se envía también aquí por POST (JSON). Si falla, el email sale igual. |
+| `N8N_WEBHOOK_SECRET` | No | Se manda en la cabecera `X-Nara-Secret` para que n8n rechace lo que no venga de la web. |
+| `NEXT_PUBLIC_SITE_URL` | No | URL canónica (sitemap, robots, Open Graph). Por defecto `https://naraintelligences.com`. |
+
+\* Sin las tres `RESEND_*`/`LEAD_*`, el formulario entrega solo por n8n. Sin
+ninguna vía configurada, en local el lead se escribe en la consola y en
+producción la API responde 503.
+
+## Formulario de contacto
+
+`src/app/api/lead/route.ts` recibe el formulario. Valida en servidor con las
+mismas reglas que el cliente (`src/lib/lead.ts`), descarta en silencio los
+envíos que rellenan el honeypot y limita a 5 envíos por IP cada 10 minutos.
+Ese límite vive en memoria de cada instancia: frena a un cliente insistente,
+no a un ataque distribuido (para eso, Upstash/Vercel KV).
+
+Respuestas: `200 {ok}` · `400 {error:"invalid", fields}` · `429` con
+`Retry-After` · `502 delivery_failed` (Resend falló) · `503 not_configured`.
+
 ## Flujo de trabajo
 
 `main` es la rama de producción: **todo lo que entra en `main` se despliega
@@ -34,10 +63,17 @@ src/
   app/
     layout.tsx        Fuentes, metadata, <LangProvider>
     page.tsx          Composición de secciones
+    api/lead/         Endpoint del formulario
+    legal/            Aviso legal, privacidad y cookies
+    opengraph-image.tsx, icon.png, apple-icon.png, robots.ts, sitemap.ts
+    not-found.tsx     404
     globals.css       Todo el estilado — los tokens están arriba del todo
   components/         Un archivo por sección
   lib/
     copy.ts           Copy ES + EN, lista de partners, email de contacto
+    legal.ts          Textos legales ES + EN y datos del titular
+    lead.ts           Validación del formulario (cliente y servidor)
+    site.ts           URL canónica, rutas del sitemap, JSON-LD
     lang-context.tsx  Estado de idioma (inglés por defecto)
     use-scroll-progress.ts
     use-muted-autoplay.ts
@@ -53,6 +89,9 @@ design/               Prototipo original de Claude Design (solo referencia)
 | Colores, tamaños, espaciados | `src/app/globals.css` (tokens al principio) |
 | Lista de partners | `src/lib/copy.ts` → `PARTNERS` |
 | Email de contacto | `src/lib/copy.ts` → `CONTACT_EMAIL` |
+| Datos del titular (aviso legal, privacidad) | `src/lib/legal.ts` → `LEGAL_ENTITY` |
+| Textos legales | `src/lib/legal.ts` |
+| Fotos de agentes | `public/agents/` + campo `photo` del agente en `copy.ts` |
 
 ## Notas de implementación
 
@@ -84,25 +123,13 @@ scroll.
 
 ## Assets pendientes
 
-Cinco visuales siguen como placeholders (`<ImagePlaceholder>`) porque todavía
-no hay render para ellos. Cada uno es un cambio directo: el layout y el
-comportamiento de scroll de alrededor no cambian.
-
-| Dónde | Componente | Falta |
+| Dónde | Estado ahora | Cuando llegue el asset |
 | --- | --- | --- |
-| Under the hood, capa de atrás | `Reveal.tsx` | Render del interior del androide |
-| Under the hood, capa de delante | `Reveal.tsx` | Render del exterior del androide |
-| Paso 03 — Development | `HowItWorks.tsx` (`STEP_VIDEOS[2]`) | Vídeo |
-| Paso 04 — Flexible payment | `HowItWorks.tsx` (`STEP_VIDEOS[3]`) | Vídeo |
-| Sección Company | `About.tsx` | Imagen de equipo/agente |
-
-Para los dos vídeos de pasos: deja los archivos en `public/assets/` y rellena
-los `null` de `STEP_VIDEOS` — el crossfade y el play/pause ya están resueltos.
-
-La cinta de partners renderiza los nombres como texto. Durante el diseño nunca
-se consiguieron los logos oficiales; si aparecen, sustituye el `<span>` de
-`PartnerMarquee.tsx` por `<Image>` y mantén la estructura de dos grupos para
-que el bucle de `-50%` siga siendo continuo.
+| Under the hood (`Reveal.tsx`) | Desmontada de `page.tsx` | Pon los renders interior/exterior en `Reveal.tsx` y vuelve a montar `<Reveal />` (ver comentario en `page.tsx`). |
+| Paso 03 — Development | Tarjeta tipográfica (número + título) | Deja el vídeo en `public/assets/`, extrae el póster (`ffmpeg -i x.mp4 -frames:v 1 -q:v 3 x-poster.jpg`) y rellena `STEP_VIDEOS[2]` en `HowItWorks.tsx`. |
+| Paso 04 — Flexible payment | Igual | `STEP_VIDEOS[3]`. |
+| Fotos de agentes | Monograma con la inicial y el nombre | Sube `public/agents/<nombre>.jpg` y añade `photo: "/agents/<nombre>.jpg"` al agente en `copy.ts` (EN y ES). |
+| Sección Company (`About.tsx`) | No se monta | Imagen de equipo. |
 
 ## Verificación
 
