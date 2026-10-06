@@ -452,7 +452,7 @@ export const COPY: Record<Lang, Copy> = {
         "We are an engineering company based in Spain, building on top of general artificial intelligence models rather than reselling them. Every agent we deliver is designed around a real process in a real company: we audit how the work is done today, define where an agent can own it end to end, and stay involved while it takes over.",
       whoBody2:
         "We built the company the same way we build for our clients. Our own development, finance and people functions run on the same director-and-specialist structure we sell — which is why we can tell you what this model actually costs to run, and where it stops being the right answer.",
-      sectorsTitle: "Where we've done it",
+      sectorsTitle: "Where it fits",
       sectorsBody:
         "The pattern repeats across very different companies: one process that eats hours, no clear owner, and nobody with time to fix it. That is the shape of a job for an agent.",
       sectors: [
@@ -519,7 +519,7 @@ export const COPY: Record<Lang, Copy> = {
           label:
             "of organizations report significant, measurable ROI from agentic AI so far. Deployment quality is still what separates results from pilots — which is exactly the part we do.",
           source: "Deloitte Global, October 2025",
-          href: "https://www.deloitte.com/global/en/issues/ai/ai-roi-the-paradox-of-rising-investment-and-elusive-returns.html",
+          href: "https://www.deloitte.com/global/en/what-we-do/capabilities/ai/research/ai-roi-the-paradox-of-rising-investment-and-elusive-returns.html",
         },
       ],
       charts: [
@@ -571,7 +571,7 @@ export const COPY: Record<Lang, Copy> = {
       cookies: "Cookie policy",
       builtIn: "Built in Spain",
     },
-    partnersLabel: "Powered by",
+    partnersLabel: "Technologies we work with",
     a11y: {
       switchToEnglish: "English",
       switchToSpanish: "Español",
@@ -856,7 +856,7 @@ export const COPY: Record<Lang, Copy> = {
         "Somos una empresa de ingeniería con base en España que construye sobre modelos de inteligencia artificial general, en lugar de limitarse a revenderlos. Cada agente que entregamos se diseña alrededor de un proceso real de una empresa real: auditamos cómo se hace hoy el trabajo, definimos dónde un agente puede hacerse cargo de principio a fin, y seguimos dentro mientras lo asume.",
       whoBody2:
         "Construimos la compañía igual que construimos para nuestros clientes. Nuestras propias áreas de desarrollo, finanzas y personas funcionan con la misma estructura de director y especialistas que vendemos, y por eso podemos decirte lo que cuesta de verdad mantener este modelo, y dónde deja de ser la respuesta correcta.",
-      sectorsTitle: "Dónde lo hemos hecho",
+      sectorsTitle: "Dónde encaja",
       sectorsBody:
         "El patrón se repite en empresas muy distintas: un proceso que se come las horas, sin un responsable claro, y nadie con tiempo para arreglarlo. Esa es la forma que tiene un trabajo para un agente.",
       sectors: [
@@ -923,7 +923,7 @@ export const COPY: Record<Lang, Copy> = {
           label:
             "de las organizaciones declaran un ROI significativo y medible con IA agéntica hasta ahora. Lo que separa los resultados de los pilotos sigue siendo la calidad del despliegue: justo la parte que hacemos nosotros.",
           source: "Deloitte Global, octubre de 2025",
-          href: "https://www.deloitte.com/global/en/issues/ai/ai-roi-the-paradox-of-rising-investment-and-elusive-returns.html",
+          href: "https://www.deloitte.com/global/en/what-we-do/capabilities/ai/research/ai-roi-the-paradox-of-rising-investment-and-elusive-returns.html",
         },
       ],
       charts: [
@@ -975,7 +975,7 @@ export const COPY: Record<Lang, Copy> = {
       cookies: "Política de cookies",
       builtIn: "Hecho en España",
     },
-    partnersLabel: "Powered by",
+    partnersLabel: "Tecnologías con las que trabajamos",
     a11y: {
       switchToEnglish: "English",
       switchToSpanish: "Español",
