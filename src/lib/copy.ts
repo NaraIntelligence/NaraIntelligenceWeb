@@ -166,8 +166,9 @@ export type Copy = {
     companyLabel: string;
     contactLabel: string;
     legalLabel: string;
+    notice: string;
     privacy: string;
-    terms: string;
+    cookies: string;
     builtIn: string;
   };
   partnersLabel: string;
@@ -565,8 +566,9 @@ export const COPY: Record<Lang, Copy> = {
       companyLabel: "Company",
       contactLabel: "Get in touch",
       legalLabel: "Legal",
+      notice: "Legal notice",
       privacy: "Privacy policy",
-      terms: "Terms of service",
+      cookies: "Cookie policy",
       builtIn: "Built in Spain",
     },
     partnersLabel: "Powered by",
@@ -968,8 +970,9 @@ export const COPY: Record<Lang, Copy> = {
       companyLabel: "Compañía",
       contactLabel: "Contacto",
       legalLabel: "Legal",
+      notice: "Aviso legal",
       privacy: "Política de privacidad",
-      terms: "Términos del servicio",
+      cookies: "Política de cookies",
       builtIn: "Hecho en España",
     },
     partnersLabel: "Powered by",
