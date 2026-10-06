@@ -125,7 +125,45 @@ scroll.
 
 | Dónde | Estado ahora | Cuando llegue el asset |
 | --- | --- | --- |
-| Under the hood (`Reveal.tsx`) | Desmontada de `page.tsx` | Pon los renders interior/exterior en `Reveal.tsx` y vuelve a montar `<Reveal />` (ver comentario en `page.tsx`). |
+| Under the hood (`Reveal.tsx`) | Desmontada de `page.tsx` (el exterior ya existe; falta un interior que encaje píxel a píxel) | Pon los renders interior/exterior en `Reveal.tsx` y vuelve a montar `<Reveal />` (ver comentario en `page.tsx`). |
+| Portada (hero) | Vídeo `hero-agent.mp4` | Imagen pendiente de rehacer. |
+| Paso 01 — Contact | Vídeo `step-contact.mp4` | Imagen pendiente de rehacer: añádela a `public/images/steps/` y cambia `STEP_VISUALS[0]` en `HowItWorks.tsx` a `{ kind: "image", src }`. |
+| Pasos 02–04 | Imágenes en `public/images/steps/` (2:3, fondo negro; la máscara elíptica de `.steps__image` las funde con el fondo) | — |
+| Fotos de agentes | `public/agents/` + campo `photo` del agente en `copy.ts` |
+
+## Notas de implementación
+
+**Idioma.** El inglés es el idioma por defecto y es lo que renderiza el
+servidor. La elección del visitante se guarda en `localStorage` y se aplica en
+cliente vía `useSyncExternalStore`, así que no hay desajuste de hidratación ni
+parpadeo de idioma. Ningún texto está escrito a pelo en un componente.
+
+**Scroll.** Dos secciones van dirigidas por scroll, ambas con
+`useScrollProgress` (limitado por `requestAnimationFrame` para que no compita
+con los vídeos):
+
+- *Under the hood* — pista de 250vh con panel sticky. El progreso del scroll
+  mueve un `clip-path` que va borrando la carcasa exterior del androide de
+  abajo arriba para dejar ver el interior.
+- *How it works* — pista de 400vh; cada uno de los cuatro pasos ocupa un
+  cuarto. El paso activo se deriva de la posición de scroll durante el render
+  (sin estado ni efecto). Los vídeos quedan montados para que el cambio sea un
+  crossfade de 1s, pero solo se reproduce el activo.
+
+**Autoplay de vídeo.** `muted` se asigna como *propiedad* del DOM antes de
+`play()`, y `play()` se reintenta en `canplay`. Ambas cosas son necesarias para
+la política de autoplay de Chrome: el atributo `muted` del HTML/JSX no basta.
+Ver `src/lib/use-muted-autoplay.ts`.
+
+**Layout.** `overflow-x: clip` en `.page`, nunca `hidden` — `hidden` en un
+ancestro rompe silenciosamente `position: sticky` en las dos secciones de
+scroll.
+
+## Assets pendientes
+
+| Dónde | Estado ahora | Cuando llegue el asset |
+| --- | --- | --- |
+| Under the hood (`Reveal.tsx`) | Desmontada de `page.tsx` (el exterior ya existe; falta un interior que encaje píxel a píxel) | Pon los renders interior/exterior en `Reveal.tsx` y vuelve a montar `<Reveal />` (ver comentario en `page.tsx`). |
 | Paso 03 — Development | Tarjeta tipográfica (número + título) | Deja el vídeo en `public/assets/`, extrae el póster (`ffmpeg -i x.mp4 -frames:v 1 -q:v 3 x-poster.jpg`) y rellena `STEP_VIDEOS[2]` en `HowItWorks.tsx`. |
 | Paso 04 — Flexible payment | Igual | `STEP_VIDEOS[3]`. |
 | Fotos de agentes | Monograma con la inicial y el nombre | Sube `public/agents/<nombre>.jpg` y añade `photo: "/agents/<nombre>.jpg"` al agente en `copy.ts` (EN y ES). |

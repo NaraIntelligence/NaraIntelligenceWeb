@@ -717,8 +717,33 @@ p {
   letter-spacing: 0.08em;
 }
 
+/* Stills fill the whole visual (the androids are framed tighter than the
+   old videos). Their pure black would read as a box against the ambient
+   glow, so an elliptical mask dissolves it from the figure outwards. */
+.steps__image {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  max-width: 100%;
+  /* Same shape as the stills, so the mask hugs the picture itself rather
+     than the (wider) visual box around it. */
+  aspect-ratio: 2 / 3;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 1s ease;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 46%, #000 58%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 46%, #000 58%, transparent 100%);
+}
+
+.steps__image img {
+  object-fit: contain;
+}
+
 .steps__video.is-active,
-.steps__card.is-active {
+.steps__card.is-active,
+.steps__image.is-active {
   opacity: 1;
 }
 
@@ -2408,6 +2433,7 @@ p {
 
   .steps__video,
   .steps__card,
+  .steps__image,
   .step,
   .step__title,
   .step__body {

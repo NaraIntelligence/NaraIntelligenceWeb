@@ -1,18 +1,33 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { useLang } from "@/lib/lang-context";
 import { useScrollProgress } from "@/lib/use-scroll-progress";
 import { STEP_ICONS } from "./icons";
 
-/** One visual per step. `null` = no video yet: the step shows a typographic
- *  card (its number and title) instead, crossfading exactly like a video. */
-const STEP_VIDEOS: ({ src: string; poster: string } | null)[] = [
-  { src: "/assets/step-contact.mp4", poster: "/assets/step-contact-poster.jpg" },
-  { src: "/assets/step-audit.mp4", poster: "/assets/step-audit-poster.jpg" },
-  null,
-  null,
+/** One visual per step, all crossfading the same way. Step 1 keeps its
+ *  video until its still lands; `null` would fall back to a typographic card
+ *  (the step's number and title). */
+type StepVisual =
+  | { kind: "video"; src: string; poster: string }
+  | { kind: "image"; src: string }
+  | null;
+
+const STEP_VISUALS: StepVisual[] = [
+  { kind: "video", src: "/assets/step-contact.mp4", poster: "/assets/step-contact-poster.jpg" },
+  { kind: "image", src: "/images/steps/step-2-audit.jpg" },
+  { kind: "image", src: "/images/steps/step-3-development.jpg" },
+  { kind: "image", src: "/images/steps/step-4-payment.jpg" },
 ];
+
+function StepImage({ src, active }: { src: string; active: boolean }) {
+  return (
+    <div className={`steps__image${active ? " is-active" : ""}`} aria-hidden>
+      <Image src={src} alt="" fill sizes="(max-width: 1080px) 360px, 560px" />
+    </div>
+  );
+}
 
 function StepCard({
   n,
@@ -105,23 +120,28 @@ export function HowItWorks() {
       <div className="steps__track" ref={trackRef}>
         <div className="steps__sticky">
           <div className="steps__visual">
-            {STEP_VIDEOS.map((video, i) =>
-              video ? (
-                <StepVideo
-                  key={video.src}
-                  src={video.src}
-                  poster={video.poster}
-                  active={activeStep === i}
-                />
-              ) : (
+            {STEP_VISUALS.map((visual, i) => {
+              const active = activeStep === i;
+              if (visual?.kind === "video")
+                return (
+                  <StepVideo
+                    key={visual.src}
+                    src={visual.src}
+                    poster={visual.poster}
+                    active={active}
+                  />
+                );
+              if (visual?.kind === "image")
+                return <StepImage key={visual.src} src={visual.src} active={active} />;
+              return (
                 <StepCard
                   key={`card-${i}`}
                   n={String(i + 1).padStart(2, "0")}
                   title={t.stepList[i].title}
-                  active={activeStep === i}
+                  active={active}
                 />
-              ),
-            )}
+              );
+            })}
           </div>
 
           <ol className="steps__list">
