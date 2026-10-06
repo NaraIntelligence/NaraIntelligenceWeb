@@ -129,14 +129,10 @@ scroll.
 
 ## Imágenes pendientes de rehacer
 
-Todas están puestas, pero estas son provisionales:
-
 | Imagen | Problema |
 | --- | --- |
-| `images/hero.jpg` | Tiende la mano en vez de saludar; casi igual que el paso 04. |
-| `images/steps/step-1-contact.jpg` | Es la misma imagen que `reveal/exterior.jpg`. |
-| `images/reveal/interior.jpg` | No encaja con la exterior (pose distinta): salto visible en la línea de corte. |
-| `agents/*.jpg` (las 9) | No corresponden a cada rol y llevan texto, logos de terceros y cifras/reseñas inventadas. Rehacer antes de producción. |
+| `agents/tomas.jpg` | Lleva logos de terceros flotando (OpenAI, Gmail, Sheets, Slack, WhatsApp, Calendar, Notion). Rehacer antes de producción. |
+| `agents/camila.jpg` | Aceptable, pero señala paneles de gráficas en vez de algo de reclutamiento y hay un icono que recuerda a WhatsApp. Opcional. |
 
 Para sustituir una, basta con reemplazar el archivo con el mismo nombre (2:3,
 idealmente 1024×1536, JPG).
