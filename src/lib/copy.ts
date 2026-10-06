@@ -100,7 +100,17 @@ export type Copy = {
     required: string;
     invalidEmail: string;
     invalidPhone: string;
+    tooLong: string;
+    consentPrefix: string;
+    consentLink: string;
+    consentSuffix: string;
+    consentRequired: string;
+    privacyNote: string;
     submit: string;
+    sending: string;
+    retry: string;
+    sendError: string;
+    rateLimited: string;
     close: string;
     successTitle: string;
     successBody: string;
@@ -409,11 +419,24 @@ export const COPY: Record<Lang, Copy> = {
       required: "You must complete this field",
       invalidEmail: "Enter a valid email address",
       invalidPhone: "Enter a valid phone number",
+      tooLong: "This is too long — please shorten it",
+      consentPrefix: "I have read and accept the",
+      consentLink: "privacy policy",
+      consentSuffix: ".",
+      consentRequired: "You need to accept the privacy policy to send the request",
+      privacyNote:
+        "We only use your details to answer this request. You can access, correct or delete them at any time.",
       submit: "Send request",
+      sending: "Sending…",
+      retry: "Try again",
+      sendError:
+        "We couldn't send your request. Check your connection and try again, or write to us at",
+      rateLimited:
+        "Too many requests from this connection. Wait a few minutes and try again, or write to us at",
       close: "Close",
-      successTitle: "Your email is ready to send",
+      successTitle: "Received — we'll contact you within 72 hours",
       successBody:
-        "We opened your email app with everything filled in. Send it and we'll reply in under 72 hours.",
+        "Your request is with our team. Expect a WhatsApp message or an email from us with the next steps.",
     },
     about: {
       kicker: "Who we are",
@@ -807,11 +830,24 @@ export const COPY: Record<Lang, Copy> = {
       required: "Debes completar este campo",
       invalidEmail: "Introduce un email válido",
       invalidPhone: "Introduce un teléfono válido",
+      tooLong: "Es demasiado largo, acórtalo por favor",
+      consentPrefix: "He leído y acepto la",
+      consentLink: "política de privacidad",
+      consentSuffix: ".",
+      consentRequired: "Debes aceptar la política de privacidad para enviar la solicitud",
+      privacyNote:
+        "Solo usamos tus datos para responder a esta solicitud. Puedes acceder a ellos, corregirlos o borrarlos cuando quieras.",
       submit: "Enviar solicitud",
+      sending: "Enviando…",
+      retry: "Reintentar",
+      sendError:
+        "No hemos podido enviar tu solicitud. Revisa tu conexión y vuelve a intentarlo, o escríbenos a",
+      rateLimited:
+        "Demasiadas solicitudes desde esta conexión. Espera unos minutos y vuelve a intentarlo, o escríbenos a",
       close: "Cerrar",
-      successTitle: "Tu correo está listo para enviar",
+      successTitle: "Recibido — te contactaremos en menos de 72 horas",
       successBody:
-        "Abrimos tu aplicación de correo con todo rellenado. Envíalo y te respondemos en menos de 72 horas.",
+        "Tu solicitud ya está con nuestro equipo. Te escribiremos por WhatsApp o por email con los siguientes pasos.",
     },
     about: {
       kicker: "Quiénes somos",
@@ -983,4 +1019,4 @@ export const PARTNERS = [
   { name: "Stripe", logo: "/logos/stripe.png" },
 ] as const;
 
-export const CONTACT_EMAIL = "hola@naraintelligence.ai";
+export const CONTACT_EMAIL = "admin@naraintelligences.com";

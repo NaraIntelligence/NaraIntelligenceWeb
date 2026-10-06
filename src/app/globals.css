@@ -2305,3 +2305,68 @@ p {
     transition-duration: 0.01s;
   }
 }
+
+/* ==========================================================================
+   Request-info form — consent, honeypot, send states
+   ========================================================================== */
+
+/* Visually hidden rather than display:none, which some bots know to skip. */
+.form__hp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.form__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.form__consent a {
+  color: var(--text-heading);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.form__check {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  accent-color: var(--accent-fill);
+  cursor: pointer;
+}
+
+.form__check[aria-invalid="true"] {
+  outline: 1px solid #ff5f56;
+  outline-offset: 2px;
+}
+
+.form__alert {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #ff8a82;
+  border: 1px solid rgba(255, 95, 86, 0.35);
+  background: rgba(255, 95, 86, 0.06);
+  border-radius: 10px;
+  padding: 11px 13px;
+}
+
+.form__alert a {
+  color: var(--text-heading);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.form__submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
