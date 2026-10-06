@@ -17,7 +17,8 @@
   --text-muted: #9a9a9a;
   --text-body: #8f8f8f;
   --text-dim: #7a7a7a;
-  --text-faint: #6a6a6a;
+  /* #767676 is the darkest grey that still passes WCAG AA (4.6:1) on black. */
+  --text-faint: #767676;
   --text-inverse: #050505;
 
   --line: rgba(255, 255, 255, 0.08);
