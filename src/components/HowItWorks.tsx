@@ -7,9 +7,9 @@ import { STEP_ICONS } from "./icons";
 
 /** One visual per step. `null` = no video yet: the step shows a typographic
  *  card (its number and title) instead, crossfading exactly like a video. */
-const STEP_VIDEOS: (string | null)[] = [
-  "/assets/step-contact.mp4",
-  "/assets/step-audit.mp4",
+const STEP_VIDEOS: ({ src: string; poster: string } | null)[] = [
+  { src: "/assets/step-contact.mp4", poster: "/assets/step-contact-poster.jpg" },
+  { src: "/assets/step-audit.mp4", poster: "/assets/step-audit-poster.jpg" },
   null,
   null,
 ];
@@ -31,7 +31,15 @@ function StepCard({
   );
 }
 
-function StepVideo({ src, active }: { src: string; active: boolean }) {
+function StepVideo({
+  src,
+  poster,
+  active,
+}: {
+  src: string;
+  poster: string;
+  active: boolean;
+}) {
   const ref = useRef<HTMLVideoElement>(null);
 
   // Both videos stay mounted so the swap is a 1s crossfade rather than a
@@ -60,10 +68,13 @@ function StepVideo({ src, active }: { src: string; active: boolean }) {
       ref={ref}
       className={`steps__video${active ? " is-active" : ""}`}
       src={src}
+      poster={poster}
       loop
       muted
       playsInline
-      preload="auto"
+      // Below the fold: fetch only what's needed to size it; play() pulls
+      // the rest once the step is reached.
+      preload="metadata"
       aria-hidden
     />
   );
@@ -94,9 +105,14 @@ export function HowItWorks() {
       <div className="steps__track" ref={trackRef}>
         <div className="steps__sticky">
           <div className="steps__visual">
-            {STEP_VIDEOS.map((src, i) =>
-              src ? (
-                <StepVideo key={src} src={src} active={activeStep === i} />
+            {STEP_VIDEOS.map((video, i) =>
+              video ? (
+                <StepVideo
+                  key={video.src}
+                  src={video.src}
+                  poster={video.poster}
+                  active={activeStep === i}
+                />
               ) : (
                 <StepCard
                   key={`card-${i}`}

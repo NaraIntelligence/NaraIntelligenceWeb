@@ -37,6 +37,7 @@ export function Hero() {
           ref={videoRef}
           className="hero__video"
           src="/assets/hero-agent.mp4"
+          poster="/assets/hero-agent-poster.jpg"
           loop
           muted
           playsInline
