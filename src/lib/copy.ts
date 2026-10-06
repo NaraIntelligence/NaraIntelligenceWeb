@@ -171,6 +171,7 @@ export type Copy = {
     cookies: string;
     builtIn: string;
   };
+  notFound: { title: string; body: string; home: string; contact: string };
   partnersLabel: string;
   a11y: { switchToEnglish: string; switchToSpanish: string; skipToContent: string };
 };
@@ -570,6 +571,12 @@ export const COPY: Record<Lang, Copy> = {
       privacy: "Privacy policy",
       cookies: "Cookie policy",
       builtIn: "Built in Spain",
+    },
+    notFound: {
+      title: "This page isn't on the roster.",
+      body: "The link may be old or mistyped. Everything we do is one click away from the home page.",
+      home: "Back to home",
+      contact: "Request info",
     },
     partnersLabel: "Technologies we work with",
     a11y: {
@@ -974,6 +981,12 @@ export const COPY: Record<Lang, Copy> = {
       privacy: "Política de privacidad",
       cookies: "Política de cookies",
       builtIn: "Hecho en España",
+    },
+    notFound: {
+      title: "Esta página no está en la plantilla.",
+      body: "Puede que el enlace sea antiguo o tenga una errata. Todo lo que hacemos está a un clic desde la página de inicio.",
+      home: "Volver al inicio",
+      contact: "Solicitar información",
     },
     partnersLabel: "Tecnologías con las que trabajamos",
     a11y: {
