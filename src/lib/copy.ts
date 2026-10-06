@@ -51,14 +51,12 @@ export type Copy = {
     subtitle: string;
     ctaPrimary: string;
     ctaSecondary: string;
-    /** Accessible name for the hero video. */
-    videoLabel: string;
+    /** Alt text for the hero image. */
+    imageLabel: string;
   };
   steps: { kicker: string; heading: string };
   reveal: {
     kicker: string;
-    innerPlaceholder: string;
-    outerPlaceholder: string;
     caption: string;
   };
   stepList: Step[];
@@ -192,7 +190,7 @@ export const COPY: Record<Lang, Copy> = {
         "We design, train and deploy AI agents that run real workflows in your company — with the precision and availability of one more employee.",
       ctaPrimary: "Request info — hire yours now",
       ctaSecondary: "How it works",
-      videoLabel: "A Nara digital employee greeting you",
+      imageLabel: "A Nara digital employee",
     },
     steps: {
       kicker: "How it works",
@@ -200,8 +198,6 @@ export const COPY: Record<Lang, Copy> = {
     },
     reveal: {
       kicker: "Under the hood",
-      innerPlaceholder: "Interior",
-      outerPlaceholder: "Android",
       caption: "Scroll to see what powers every digital employee.",
     },
     stepList: [
@@ -252,6 +248,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Diego",
         role: "Development Director",
         department: "dev",
+        photo: "/agents/diego.jpg",
         description:
           "Owns the engineering roadmap and reviews everything his team ships.",
         detail:
@@ -267,6 +264,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Sofía",
         role: "Finance Director",
         department: "finance",
+        photo: "/agents/sofia.jpg",
         description:
           "Keeps the books straight and signs off on every financial report.",
         detail:
@@ -282,6 +280,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Elena",
         role: "HR Director",
         department: "hr",
+        photo: "/agents/elena.jpg",
         description:
           "Runs people operations end-to-end, from hiring to onboarding.",
         detail:
@@ -299,6 +298,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Mateo",
         role: "Code Review Agent",
         department: "dev",
+        photo: "/agents/mateo.jpg",
         description:
           "Reviews every pull request against your team's standards, 24/7.",
         detail:
@@ -313,6 +313,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Lucía",
         role: "QA Agent",
         department: "dev",
+        photo: "/agents/lucia.jpg",
         description: "Runs regression tests before anything reaches production.",
         detail:
           "Lucía is the gate before production. She runs the regression suite on every release candidate, reproduces the failures she finds, and writes them up clearly enough that whoever picks them up does not have to guess.",
@@ -326,6 +327,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Valentina",
         role: "Invoicing Agent",
         department: "finance",
+        photo: "/agents/valentina.jpg",
         description: "Generates and sends invoices the moment a deal closes.",
         detail:
           "Valentina closes the loop between selling and getting paid. The invoice goes out the same day the deal does, the payment gets matched when it lands, and the polite reminder goes out on schedule when it does not.",
@@ -339,6 +341,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Andrés",
         role: "Expense Reports Agent",
         department: "finance",
+        photo: "/agents/andres.jpg",
         description: "Categorizes receipts and flags anything out of policy.",
         detail:
           "Andrés takes expense reports off everyone's desk. He reads the receipt, assigns the category, checks it against your policy, and routes only the genuine exceptions to a human.",
@@ -352,6 +355,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Camila",
         role: "Recruiting Agent",
         department: "hr",
+        photo: "/agents/camila.jpg",
         description: "Screens resumes and schedules interviews for open roles.",
         detail:
           "Camila works the top of the hiring funnel. She screens every application against the role you defined, replies to candidates the same day, and books interviews straight into the calendars of the people who need to be there.",
@@ -365,6 +369,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Tomás",
         role: "Onboarding Agent",
         department: "hr",
+        photo: "/agents/tomas.jpg",
         description: "Walks new hires through setup on day one, every time.",
         detail:
           "Tomás makes day one identical for every hire. Accounts, access, equipment and the first-week plan are all ready before they sit down, and he answers the questions they would otherwise interrupt someone else to ask.",
@@ -600,7 +605,7 @@ export const COPY: Record<Lang, Copy> = {
         "Diseñamos, entrenamos y desplegamos agentes de inteligencia artificial que ejecutan procesos reales de tu empresa — con la precisión y disponibilidad de un empleado más.",
       ctaPrimary: "Solicita info — contrata al tuyo ya",
       ctaSecondary: "Cómo funciona",
-      videoLabel: "Un empleado digital de Nara saludando",
+      imageLabel: "Un empleado digital de Nara",
     },
     steps: {
       kicker: "Cómo funciona",
@@ -608,8 +613,6 @@ export const COPY: Record<Lang, Copy> = {
     },
     reveal: {
       kicker: "Por dentro",
-      innerPlaceholder: "Interior",
-      outerPlaceholder: "Androide",
       caption: "Desplázate para ver qué hay dentro de cada empleado digital.",
     },
     stepList: [
@@ -660,6 +663,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Diego",
         role: "Director de Desarrollo",
         department: "dev",
+        photo: "/agents/diego.jpg",
         description:
           "Define el roadmap de ingeniería y revisa todo lo que entrega su equipo.",
         detail:
@@ -675,6 +679,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Sofía",
         role: "Directora de Finanzas",
         department: "finance",
+        photo: "/agents/sofia.jpg",
         description:
           "Mantiene las cuentas en orden y aprueba cada reporte financiero.",
         detail:
@@ -690,6 +695,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Elena",
         role: "Directora de RRHH",
         department: "hr",
+        photo: "/agents/elena.jpg",
         description:
           "Gestiona todo el ciclo de personas, desde la contratación hasta el onboarding.",
         detail:
@@ -707,6 +713,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Mateo",
         role: "Agente de Code Review",
         department: "dev",
+        photo: "/agents/mateo.jpg",
         description:
           "Revisa cada pull request contra los estándares de tu equipo, 24/7.",
         detail:
@@ -721,6 +728,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Lucía",
         role: "Agente de QA",
         department: "dev",
+        photo: "/agents/lucia.jpg",
         description:
           "Corre pruebas de regresión antes de que algo llegue a producción.",
         detail:
@@ -735,6 +743,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Valentina",
         role: "Agente de Facturación",
         department: "finance",
+        photo: "/agents/valentina.jpg",
         description: "Genera y envía facturas apenas se cierra un trato.",
         detail:
           "Valentina cierra el círculo entre vender y cobrar. La factura sale el mismo día que el trato, el pago se concilia cuando entra, y el recordatorio educado sale en su momento cuando no entra.",
@@ -748,6 +757,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Andrés",
         role: "Agente de Gastos",
         department: "finance",
+        photo: "/agents/andres.jpg",
         description: "Categoriza recibos y marca lo que se sale de política.",
         detail:
           "Andrés quita las notas de gasto de la mesa de todo el mundo. Lee el recibo, asigna la categoría, lo contrasta con vuestra política y deriva a una persona solo las excepciones de verdad.",
@@ -761,6 +771,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Camila",
         role: "Agente de Reclutamiento",
         department: "hr",
+        photo: "/agents/camila.jpg",
         description: "Filtra CVs y agenda entrevistas para las posiciones abiertas.",
         detail:
           "Camila trabaja la parte alta del embudo de contratación. Filtra cada candidatura contra la posición que definiste, responde a los candidatos el mismo día y agenda las entrevistas directamente en los calendarios de quienes tienen que estar.",
@@ -774,6 +785,7 @@ export const COPY: Record<Lang, Copy> = {
         name: "Tomás",
         role: "Agente de Onboarding",
         department: "hr",
+        photo: "/agents/tomas.jpg",
         description: "Guía a cada nueva contratación en su primer día, siempre.",
         detail:
           "Tomás hace que el día uno sea idéntico para cada incorporación. Cuentas, accesos, equipo y plan de la primera semana están listos antes de que se sienten, y resuelve las dudas que si no acabarían interrumpiendo a otra persona.",

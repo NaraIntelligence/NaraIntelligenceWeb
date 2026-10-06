@@ -456,22 +456,19 @@ p {
   overflow: hidden;
 }
 
-.hero__video {
-  width: 96%;
-  height: 96%;
-  object-fit: contain;
-  display: block;
+/* Shaped like the still (2:3) so the mask hugs the picture, not the
+   wider visual box around it. */
+.hero__still {
+  position: relative;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 2 / 3;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 46%, #000 58%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 46%, #000 58%, transparent 100%);
 }
 
-/* Fades the bottom edge of the video into the page's black. */
-.hero__fade {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 32%;
-  background: linear-gradient(to bottom, transparent, var(--bg) 85%);
-  pointer-events: none;
+.hero__still img {
+  object-fit: contain;
 }
 
 /* ==========================================================================
@@ -590,6 +587,13 @@ p {
   height: 100%;
 }
 
+/* Both stills share one framing, so `cover` crops them identically and the
+   clip line lands on the same pixel row in each layer. */
+.reveal__layer img {
+  object-fit: cover;
+  object-position: top;
+}
+
 /* Opaque backing between the two layers so the interior never shows
    through the outer shell where it hasn't been cut away yet. */
 .reveal__backing {
@@ -658,7 +662,6 @@ p {
 }
 
 /* No frame around the videos — they sit straight on the page's black. */
-.steps__video,
 .steps__card {
   position: absolute;
   inset: 16%;
@@ -741,7 +744,6 @@ p {
   object-fit: contain;
 }
 
-.steps__video.is-active,
 .steps__card.is-active,
 .steps__image.is-active {
   opacity: 1;
@@ -1258,6 +1260,8 @@ p {
 
 .agent-sheet__photo {
   object-fit: cover;
+  /* On phones the art is a 16:9 strip — keep the face, not the torso. */
+  object-position: 50% 18%;
 }
 
 .agent-sheet__body {
@@ -2191,12 +2195,6 @@ p {
     max-width: 360px;
   }
 
-  .steps__video {
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-
   .steps__card {
     gap: 10px;
   }
@@ -2431,7 +2429,6 @@ p {
     animation-duration: 0.01s;
   }
 
-  .steps__video,
   .steps__card,
   .steps__image,
   .step,

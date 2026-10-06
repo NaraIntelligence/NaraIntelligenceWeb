@@ -3,17 +3,14 @@ import { Hero } from "@/components/Hero";
 import { HowItWorks } from "@/components/HowItWorks";
 import { PartnerMarquee } from "@/components/PartnerMarquee";
 import { Products } from "@/components/Products";
-
-// "Under the hood" (<Reveal />, src/components/Reveal.tsx) is switched off
-// until the android interior/exterior renders exist — with placeholders it
-// read as unfinished. To bring it back, drop the renders into Reveal.tsx and
-// mount it again between <PartnerMarquee /> and <HowItWorks />.
+import { Reveal } from "@/components/Reveal";
 
 export default function Page() {
   return (
     <>
       <Hero />
       <PartnerMarquee />
+      <Reveal />
       <HowItWorks />
       <Products />
       <Contact />
