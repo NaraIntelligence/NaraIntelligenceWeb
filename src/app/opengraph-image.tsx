@@ -27,7 +27,6 @@ export default function OpengraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={logoSrc} width={72} height={72} alt="" style={{ borderRadius: 14 }} />
           <span style={{ fontSize: 34, fontWeight: 600, letterSpacing: "-0.01em" }}>
             Nara Intelligence
