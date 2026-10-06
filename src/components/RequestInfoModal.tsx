@@ -1,12 +1,20 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CONTACT_EMAIL } from "@/lib/copy";
 import { useLang } from "@/lib/lang-context";
+import {
+  validateLead,
+  type LeadErrorCode,
+  type LeadErrors,
+  type LeadField,
+} from "@/lib/lead";
 import { DEFAULT_PHONE_ISO, PHONE_CODES } from "@/lib/phone-codes";
 import { useRequestInfo } from "@/lib/request-info-context";
 
-type Field = "name" | "interest" | "business" | "email" | "phone";
+type Field = Exclude<LeadField, "consent">;
+type Status = "idle" | "sending" | "error" | "rateLimited" | "sent";
 
 const EMPTY = { name: "", interest: "", business: "", email: "", phone: "" };
 
@@ -19,13 +27,16 @@ export function RequestInfoModal() {
 }
 
 function RequestInfoDialog() {
-  const { t } = useLang();
+  const { lang, t } = useLang();
   const { agentName, close } = useRequestInfo();
 
   const [values, setValues] = useState(EMPTY);
   const [countryIso, setCountryIso] = useState(DEFAULT_PHONE_ISO);
-  const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
-  const [sent, setSent] = useState(false);
+  const [consent, setConsent] = useState(false);
+  // Honeypot: off-screen and out of the tab order, so only bots fill it.
+  const [website, setWebsite] = useState("");
+  const [errors, setErrors] = useState<LeadErrors>({});
+  const [status, setStatus] = useState<Status>("idle");
   const dialogRef = useRef<HTMLDivElement>(null);
 
   // Escape closes, and the page behind must not scroll while it's open.
@@ -48,53 +59,70 @@ function RequestInfoDialog() {
     [countryIso],
   );
 
+  const message = (field: LeadField): string | undefined => {
+    const code: LeadErrorCode | undefined = errors[field];
+    if (!code) return undefined;
+    if (field === "consent") return t.form.consentRequired;
+    if (code === "invalidEmail") return t.form.invalidEmail;
+    if (code === "invalidPhone") return t.form.invalidPhone;
+    if (code === "tooLong") return t.form.tooLong;
+    return t.form.required;
+  };
+
   const set = (field: Field, value: string) => {
     setValues((v) => ({ ...v, [field]: value }));
     // Clear the error as soon as they start fixing the field.
     setErrors((e) => (e[field] ? { ...e, [field]: undefined } : e));
   };
 
-  const validate = () => {
-    const next: Partial<Record<Field, string>> = {};
-
-    (Object.keys(EMPTY) as Field[]).forEach((field) => {
-      if (!values[field].trim()) next[field] = t.form.required;
-    });
-
-    if (!next.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim()))
-      next.email = t.form.invalidEmail;
-
-    // Digits only once spacing and separators are stripped.
-    if (!next.phone && values.phone.replace(/[\s.()-]/g, "").length < 6)
-      next.phone = t.form.invalidPhone;
-
-    return next;
-  };
-
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const found = validate();
+    if (status === "sending") return;
+
+    const lead = {
+      name: values.name.trim(),
+      interest: values.interest,
+      business: values.business,
+      email: values.email.trim(),
+      dial: country.dial,
+      phone: values.phone.trim(),
+      consent,
+      agent: agentName,
+      lang,
+      page: window.location.pathname,
+    };
+
+    const found = validateLead(lead);
     setErrors(found);
     if (Object.keys(found).length > 0) return;
 
-    const subject = agentName
-      ? `${t.products.hirePrefix} ${agentName}`
-      : t.form.title;
-    const body = [
-      `${t.form.name}: ${values.name}`,
-      `${t.form.interest}: ${values.interest}`,
-      `${t.form.business}: ${values.business}`,
-      `${t.form.email}: ${values.email}`,
-      `${t.form.phone}: ${country.dial} ${values.phone}`,
-      agentName ? `\n${t.products.hirePrefix} ${agentName}` : "",
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...lead, website }),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        return;
+      }
+      if (res.status === 429) {
+        setStatus("rateLimited");
+        return;
+      }
+      const data = (await res.json().catch(() => null)) as
+        | { fields?: LeadErrors }
+        | null;
+      if (res.status === 400 && data?.fields) {
+        setErrors(data.fields);
+        setStatus("idle");
+        return;
+      }
+      setStatus("error");
+    } catch {
+      setStatus("error");
+    }
   };
 
   const heading = agentName
@@ -126,8 +154,8 @@ function RequestInfoDialog() {
           ×
         </button>
 
-        {sent ? (
-          <div className="modal__success">
+        {status === "sent" ? (
+          <div className="modal__success" role="status">
             <h2 className="modal__title">{t.form.successTitle}</h2>
             <p className="modal__subtitle">{t.form.successBody}</p>
             <button
@@ -149,7 +177,7 @@ function RequestInfoDialog() {
                 label={t.form.name}
                 placeholder={t.form.namePlaceholder}
                 value={values.name}
-                error={errors.name}
+                error={message("name")}
                 onChange={(v) => set("name", v)}
               />
 
@@ -159,7 +187,7 @@ function RequestInfoDialog() {
                 placeholder={t.form.interestPlaceholder}
                 options={t.form.interestOptions}
                 value={values.interest}
-                error={errors.interest}
+                error={message("interest")}
                 onChange={(v) => set("interest", v)}
               />
 
@@ -169,7 +197,7 @@ function RequestInfoDialog() {
                 placeholder={t.form.businessPlaceholder}
                 options={t.form.businessOptions}
                 value={values.business}
-                error={errors.business}
+                error={message("business")}
                 onChange={(v) => set("business", v)}
               />
 
@@ -179,7 +207,7 @@ function RequestInfoDialog() {
                 label={t.form.email}
                 placeholder={t.form.emailPlaceholder}
                 value={values.email}
-                error={errors.email}
+                error={message("email")}
                 onChange={(v) => set("email", v)}
               />
 
@@ -213,14 +241,71 @@ function RequestInfoDialog() {
                     aria-describedby="rif-phone-note"
                   />
                 </div>
-                {errors.phone && <p className="form__error">{errors.phone}</p>}
+                {errors.phone && <p className="form__error">{message("phone")}</p>}
                 <p className="form__note" id="rif-phone-note">
                   {t.form.whatsappNote}
                 </p>
               </div>
 
-              <button type="submit" className="btn btn--solid btn--md form__submit">
-                {t.form.submit}
+              <div className="form__hp" aria-hidden>
+                <label htmlFor="rif-website">Website</label>
+                <input
+                  id="rif-website"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </div>
+
+              <div className="form__field">
+                <label className="form__consent" htmlFor="rif-consent">
+                  <input
+                    id="rif-consent"
+                    type="checkbox"
+                    className="form__check"
+                    checked={consent}
+                    onChange={(e) => {
+                      setConsent(e.target.checked);
+                      setErrors((er) => (er.consent ? { ...er, consent: undefined } : er));
+                    }}
+                    aria-invalid={errors.consent ? true : undefined}
+                    aria-describedby="rif-privacy-note"
+                  />
+                  <span>
+                    {t.form.consentPrefix}{" "}
+                    <Link href="/legal/privacy" target="_blank" rel="noopener">
+                      {t.form.consentLink}
+                    </Link>
+                    {t.form.consentSuffix}
+                  </span>
+                </label>
+                {errors.consent && <p className="form__error">{message("consent")}</p>}
+                <p className="form__note" id="rif-privacy-note">
+                  {t.form.privacyNote}
+                </p>
+              </div>
+
+              {(status === "error" || status === "rateLimited") && (
+                <p className="form__alert" role="alert">
+                  {status === "rateLimited" ? t.form.rateLimited : t.form.sendError}{" "}
+                  <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="btn btn--solid btn--md form__submit"
+                disabled={status === "sending"}
+                aria-busy={status === "sending" || undefined}
+              >
+                {status === "sending"
+                  ? t.form.sending
+                  : status === "error" || status === "rateLimited"
+                    ? t.form.retry
+                    : t.form.submit}
               </button>
             </form>
           </>

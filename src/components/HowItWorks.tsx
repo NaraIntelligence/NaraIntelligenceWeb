@@ -1,54 +1,42 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import Image from "next/image";
+import { useRef } from "react";
 import { useLang } from "@/lib/lang-context";
 import { useScrollProgress } from "@/lib/use-scroll-progress";
 import { STEP_ICONS } from "./icons";
-import { ImagePlaceholder } from "./ImagePlaceholder";
 
-/** One visual per step. `null` = render still pending, show a placeholder. */
-const STEP_VIDEOS: (string | null)[] = [
-  "/assets/step-contact.mp4",
-  "/assets/step-audit.mp4",
-  null,
-  null,
+/** One still per step, crossfading as the steps change. `null` falls back
+ *  to a typographic card (the step's number and title). */
+const STEP_IMAGES: (string | null)[] = [
+  "/images/steps/step-1-contact.jpg",
+  "/images/steps/step-2-audit.jpg",
+  "/images/steps/step-3-development.jpg",
+  "/images/steps/step-4-payment.jpg",
 ];
 
-function StepVideo({ src, active }: { src: string; active: boolean }) {
-  const ref = useRef<HTMLVideoElement>(null);
-
-  // Both videos stay mounted so the swap is a 1s crossfade rather than a
-  // pop, but only the active one is allowed to decode frames.
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    if (!active) {
-      el.pause();
-      return;
-    }
-
-    el.muted = true;
-    el.defaultMuted = true;
-    const tryPlay = () => {
-      void el.play().catch(() => {});
-    };
-    tryPlay();
-    el.addEventListener("canplay", tryPlay);
-    return () => el.removeEventListener("canplay", tryPlay);
-  }, [active]);
-
+function StepImage({ src, active }: { src: string; active: boolean }) {
   return (
-    <video
-      ref={ref}
-      className={`steps__video${active ? " is-active" : ""}`}
-      src={src}
-      loop
-      muted
-      playsInline
-      preload="auto"
-      aria-hidden
-    />
+    <div className={`steps__image${active ? " is-active" : ""}`} aria-hidden>
+      <Image src={src} alt="" fill sizes="(max-width: 1080px) 360px, 560px" />
+    </div>
+  );
+}
+
+function StepCard({
+  n,
+  title,
+  active,
+}: {
+  n: string;
+  title: string;
+  active: boolean;
+}) {
+  return (
+    <div className={`steps__card${active ? " is-active" : ""}`} aria-hidden>
+      <span className="steps__card-n">{n}</span>
+      <span className="steps__card-title">{title}</span>
+    </div>
   );
 }
 
@@ -77,15 +65,15 @@ export function HowItWorks() {
       <div className="steps__track" ref={trackRef}>
         <div className="steps__sticky">
           <div className="steps__visual">
-            {STEP_VIDEOS.map((src, i) =>
+            {STEP_IMAGES.map((src, i) =>
               src ? (
-                <StepVideo key={src} src={src} active={activeStep === i} />
+                <StepImage key={src} src={src} active={activeStep === i} />
               ) : (
-                <ImagePlaceholder
-                  key={`slot-${i}`}
-                  className={`steps__slot${activeStep === i ? " is-active" : ""}`}
-                  variant="bare"
-                  label={String(i + 1).padStart(2, "0")}
+                <StepCard
+                  key={`card-${i}`}
+                  n={String(i + 1).padStart(2, "0")}
+                  title={t.stepList[i].title}
+                  active={activeStep === i}
                 />
               ),
             )}

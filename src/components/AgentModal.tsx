@@ -89,7 +89,7 @@ function AgentSheet({
             <span className="agent-sheet__mark" aria-hidden>
               {agent.name.charAt(0)}
             </span>
-            {!noPhoto && (
+            {agent.photo && !noPhoto && (
               <Image
                 className="agent-sheet__photo"
                 src={agent.photo}

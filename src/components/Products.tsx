@@ -47,10 +47,11 @@ function PosterCard({
     >
       <span className="poster-card__art">
         <span className="poster-card__mark" aria-hidden>
-          {agent.name.charAt(0)}
+          <span className="poster-card__initial">{agent.name.charAt(0)}</span>
+          <span className="poster-card__monogram">{agent.name}</span>
         </span>
 
-        {!noPhoto && (
+        {agent.photo && !noPhoto && (
           <Image
             className="poster-card__photo"
             src={agent.photo}

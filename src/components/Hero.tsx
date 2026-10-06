@@ -1,15 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import Image from "next/image";
 import { useLang } from "@/lib/lang-context";
-import { useMutedAutoplay } from "@/lib/use-muted-autoplay";
 import { useRequestInfo } from "@/lib/request-info-context";
 
 export function Hero() {
   const { t } = useLang();
   const { open } = useRequestInfo();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  useMutedAutoplay(videoRef, true);
 
   return (
     <section className="hero shell" id="top">
@@ -31,19 +28,17 @@ export function Hero() {
       </div>
 
       <div className="hero__visual">
-        {/* No frame, no border — the agent sits straight on the page's black,
-            scaled to `contain` so the moving arm is never clipped. */}
-        <video
-          ref={videoRef}
-          className="hero__video"
-          src="/assets/hero-agent.mp4"
-          loop
-          muted
-          playsInline
-          preload="auto"
-          aria-label={t.hero.slotPlaceholder}
-        />
-        <div className="hero__fade" />
+        {/* No frame — the android sits straight on the page; a soft mask
+            dissolves the still's black into the ambient glow. */}
+        <div className="hero__still">
+          <Image
+            src="/images/hero.jpg"
+            alt={t.hero.imageLabel}
+            fill
+            preload
+            sizes="(max-width: 1080px) 460px, 520px"
+          />
+        </div>
       </div>
     </section>
   );

@@ -10,8 +10,9 @@ type BaseAgent = {
   name: string;
   role: string;
   department: Department;
-  /** Portrait in /public/agents/ — falls back to the initial if missing. */
-  photo: string;
+  /** Portrait in /public/agents/ (e.g. "/agents/diego.jpg"). Leave it out
+   *  until the file exists — the poster shows a monogram instead. */
+  photo?: string;
   /** One line, revealed on hover over the poster. */
   description: string;
   /** Longer pitch, shown once the poster is opened. */
@@ -50,13 +51,12 @@ export type Copy = {
     subtitle: string;
     ctaPrimary: string;
     ctaSecondary: string;
-    slotPlaceholder: string;
+    /** Alt text for the hero image. */
+    imageLabel: string;
   };
   steps: { kicker: string; heading: string };
   reveal: {
     kicker: string;
-    innerPlaceholder: string;
-    outerPlaceholder: string;
     caption: string;
   };
   stepList: Step[];
@@ -100,7 +100,17 @@ export type Copy = {
     required: string;
     invalidEmail: string;
     invalidPhone: string;
+    tooLong: string;
+    consentPrefix: string;
+    consentLink: string;
+    consentSuffix: string;
+    consentRequired: string;
+    privacyNote: string;
     submit: string;
+    sending: string;
+    retry: string;
+    sendError: string;
+    rateLimited: string;
     close: string;
     successTitle: string;
     successBody: string;
@@ -154,10 +164,12 @@ export type Copy = {
     companyLabel: string;
     contactLabel: string;
     legalLabel: string;
+    notice: string;
     privacy: string;
-    terms: string;
+    cookies: string;
     builtIn: string;
   };
+  notFound: { title: string; body: string; home: string; contact: string };
   partnersLabel: string;
   a11y: { switchToEnglish: string; switchToSpanish: string; skipToContent: string };
 };
@@ -178,7 +190,7 @@ export const COPY: Record<Lang, Copy> = {
         "We design, train and deploy AI agents that run real workflows in your company — with the precision and availability of one more employee.",
       ctaPrimary: "Request info — hire yours now",
       ctaSecondary: "How it works",
-      slotPlaceholder: "Employee",
+      imageLabel: "A Nara digital employee",
     },
     steps: {
       kicker: "How it works",
@@ -186,8 +198,6 @@ export const COPY: Record<Lang, Copy> = {
     },
     reveal: {
       kicker: "Under the hood",
-      innerPlaceholder: "Interior",
-      outerPlaceholder: "Android",
       caption: "Scroll to see what powers every digital employee.",
     },
     stepList: [
@@ -409,11 +419,24 @@ export const COPY: Record<Lang, Copy> = {
       required: "You must complete this field",
       invalidEmail: "Enter a valid email address",
       invalidPhone: "Enter a valid phone number",
+      tooLong: "This is too long — please shorten it",
+      consentPrefix: "I have read and accept the",
+      consentLink: "privacy policy",
+      consentSuffix: ".",
+      consentRequired: "You need to accept the privacy policy to send the request",
+      privacyNote:
+        "We only use your details to answer this request. You can access, correct or delete them at any time.",
       submit: "Send request",
+      sending: "Sending…",
+      retry: "Try again",
+      sendError:
+        "We couldn't send your request. Check your connection and try again, or write to us at",
+      rateLimited:
+        "Too many requests from this connection. Wait a few minutes and try again, or write to us at",
       close: "Close",
-      successTitle: "Your email is ready to send",
+      successTitle: "Received — we'll contact you within 72 hours",
       successBody:
-        "We opened your email app with everything filled in. Send it and we'll reply in under 72 hours.",
+        "Your request is with our team. Expect a WhatsApp message or an email from us with the next steps.",
     },
     about: {
       kicker: "Who we are",
@@ -435,7 +458,7 @@ export const COPY: Record<Lang, Copy> = {
         "We are an engineering company based in Spain, building on top of general artificial intelligence models rather than reselling them. Every agent we deliver is designed around a real process in a real company: we audit how the work is done today, define where an agent can own it end to end, and stay involved while it takes over.",
       whoBody2:
         "We built the company the same way we build for our clients. Our own development, finance and people functions run on the same director-and-specialist structure we sell — which is why we can tell you what this model actually costs to run, and where it stops being the right answer.",
-      sectorsTitle: "Where we've done it",
+      sectorsTitle: "Where it fits",
       sectorsBody:
         "The pattern repeats across very different companies: one process that eats hours, no clear owner, and nobody with time to fix it. That is the shape of a job for an agent.",
       sectors: [
@@ -502,7 +525,7 @@ export const COPY: Record<Lang, Copy> = {
           label:
             "of organizations report significant, measurable ROI from agentic AI so far. Deployment quality is still what separates results from pilots — which is exactly the part we do.",
           source: "Deloitte Global, October 2025",
-          href: "https://www.deloitte.com/global/en/issues/ai/ai-roi-the-paradox-of-rising-investment-and-elusive-returns.html",
+          href: "https://www.deloitte.com/global/en/what-we-do/capabilities/ai/research/ai-roi-the-paradox-of-rising-investment-and-elusive-returns.html",
         },
       ],
       charts: [
@@ -549,11 +572,18 @@ export const COPY: Record<Lang, Copy> = {
       companyLabel: "Company",
       contactLabel: "Get in touch",
       legalLabel: "Legal",
+      notice: "Legal notice",
       privacy: "Privacy policy",
-      terms: "Terms of service",
+      cookies: "Cookie policy",
       builtIn: "Built in Spain",
     },
-    partnersLabel: "Powered by",
+    notFound: {
+      title: "This page isn't on the roster.",
+      body: "The link may be old or mistyped. Everything we do is one click away from the home page.",
+      home: "Back to home",
+      contact: "Request info",
+    },
+    partnersLabel: "Technologies we work with",
     a11y: {
       switchToEnglish: "English",
       switchToSpanish: "Español",
@@ -575,7 +605,7 @@ export const COPY: Record<Lang, Copy> = {
         "Diseñamos, entrenamos y desplegamos agentes de inteligencia artificial que ejecutan procesos reales de tu empresa — con la precisión y disponibilidad de un empleado más.",
       ctaPrimary: "Solicita info — contrata al tuyo ya",
       ctaSecondary: "Cómo funciona",
-      slotPlaceholder: "Empleado",
+      imageLabel: "Un empleado digital de Nara",
     },
     steps: {
       kicker: "Cómo funciona",
@@ -583,8 +613,6 @@ export const COPY: Record<Lang, Copy> = {
     },
     reveal: {
       kicker: "Por dentro",
-      innerPlaceholder: "Interior",
-      outerPlaceholder: "Androide",
       caption: "Desplázate para ver qué hay dentro de cada empleado digital.",
     },
     stepList: [
@@ -807,11 +835,24 @@ export const COPY: Record<Lang, Copy> = {
       required: "Debes completar este campo",
       invalidEmail: "Introduce un email válido",
       invalidPhone: "Introduce un teléfono válido",
+      tooLong: "Es demasiado largo, acórtalo por favor",
+      consentPrefix: "He leído y acepto la",
+      consentLink: "política de privacidad",
+      consentSuffix: ".",
+      consentRequired: "Debes aceptar la política de privacidad para enviar la solicitud",
+      privacyNote:
+        "Solo usamos tus datos para responder a esta solicitud. Puedes acceder a ellos, corregirlos o borrarlos cuando quieras.",
       submit: "Enviar solicitud",
+      sending: "Enviando…",
+      retry: "Reintentar",
+      sendError:
+        "No hemos podido enviar tu solicitud. Revisa tu conexión y vuelve a intentarlo, o escríbenos a",
+      rateLimited:
+        "Demasiadas solicitudes desde esta conexión. Espera unos minutos y vuelve a intentarlo, o escríbenos a",
       close: "Cerrar",
-      successTitle: "Tu correo está listo para enviar",
+      successTitle: "Recibido — te contactaremos en menos de 72 horas",
       successBody:
-        "Abrimos tu aplicación de correo con todo rellenado. Envíalo y te respondemos en menos de 72 horas.",
+        "Tu solicitud ya está con nuestro equipo. Te escribiremos por WhatsApp o por email con los siguientes pasos.",
     },
     about: {
       kicker: "Quiénes somos",
@@ -834,7 +875,7 @@ export const COPY: Record<Lang, Copy> = {
         "Somos una empresa de ingeniería con base en España que construye sobre modelos de inteligencia artificial general, en lugar de limitarse a revenderlos. Cada agente que entregamos se diseña alrededor de un proceso real de una empresa real: auditamos cómo se hace hoy el trabajo, definimos dónde un agente puede hacerse cargo de principio a fin, y seguimos dentro mientras lo asume.",
       whoBody2:
         "Construimos la compañía igual que construimos para nuestros clientes. Nuestras propias áreas de desarrollo, finanzas y personas funcionan con la misma estructura de director y especialistas que vendemos, y por eso podemos decirte lo que cuesta de verdad mantener este modelo, y dónde deja de ser la respuesta correcta.",
-      sectorsTitle: "Dónde lo hemos hecho",
+      sectorsTitle: "Dónde encaja",
       sectorsBody:
         "El patrón se repite en empresas muy distintas: un proceso que se come las horas, sin un responsable claro, y nadie con tiempo para arreglarlo. Esa es la forma que tiene un trabajo para un agente.",
       sectors: [
@@ -901,7 +942,7 @@ export const COPY: Record<Lang, Copy> = {
           label:
             "de las organizaciones declaran un ROI significativo y medible con IA agéntica hasta ahora. Lo que separa los resultados de los pilotos sigue siendo la calidad del despliegue: justo la parte que hacemos nosotros.",
           source: "Deloitte Global, octubre de 2025",
-          href: "https://www.deloitte.com/global/en/issues/ai/ai-roi-the-paradox-of-rising-investment-and-elusive-returns.html",
+          href: "https://www.deloitte.com/global/en/what-we-do/capabilities/ai/research/ai-roi-the-paradox-of-rising-investment-and-elusive-returns.html",
         },
       ],
       charts: [
@@ -948,11 +989,18 @@ export const COPY: Record<Lang, Copy> = {
       companyLabel: "Compañía",
       contactLabel: "Contacto",
       legalLabel: "Legal",
+      notice: "Aviso legal",
       privacy: "Política de privacidad",
-      terms: "Términos del servicio",
+      cookies: "Política de cookies",
       builtIn: "Hecho en España",
     },
-    partnersLabel: "Powered by",
+    notFound: {
+      title: "Esta página no está en la plantilla.",
+      body: "Puede que el enlace sea antiguo o tenga una errata. Todo lo que hacemos está a un clic desde la página de inicio.",
+      home: "Volver al inicio",
+      contact: "Solicitar información",
+    },
+    partnersLabel: "Tecnologías con las que trabajamos",
     a11y: {
       switchToEnglish: "English",
       switchToSpanish: "Español",
@@ -983,4 +1031,4 @@ export const PARTNERS = [
   { name: "Stripe", logo: "/logos/stripe.png" },
 ] as const;
 
-export const CONTACT_EMAIL = "hola@naraintelligence.ai";
+export const CONTACT_EMAIL = "admin@naraintelligences.com";

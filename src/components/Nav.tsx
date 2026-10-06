@@ -12,7 +12,7 @@ export function Nav() {
 
   return (
     <header className="nav">
-      <Link className="nav__brand" href="/">
+      <Link className="nav__brand" href="/" aria-label="Nara Intelligence">
         <Image
           className="nav__logo"
           src="/assets/na-logo.jpg"

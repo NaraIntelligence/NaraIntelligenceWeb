@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { useLang } from "@/lib/lang-context";
 import { useScrollProgress } from "@/lib/use-scroll-progress";
-import { ImagePlaceholder } from "./ImagePlaceholder";
 
 /**
  * "Under the hood" — the further you scroll, the more of the android's
@@ -27,16 +27,13 @@ export function Reveal() {
         <p className="reveal__kicker">{t.reveal.kicker}</p>
 
         <div className="reveal__frame">
-          <ImagePlaceholder
-            className="reveal__layer"
-            label={t.reveal.innerPlaceholder}
-          />
+          <div className="reveal__layer">
+            <Image src="/images/reveal/interior.jpg" alt="" fill sizes="340px" />
+          </div>
           <div className="reveal__backing" style={{ clipPath }} />
-          <ImagePlaceholder
-            className="reveal__layer"
-            label={t.reveal.outerPlaceholder}
-            style={{ clipPath }}
-          />
+          <div className="reveal__layer" style={{ clipPath }}>
+            <Image src="/images/reveal/exterior.jpg" alt="" fill sizes="340px" />
+          </div>
         </div>
 
         <p className="reveal__caption">{t.reveal.caption}</p>

@@ -55,9 +55,13 @@ export function Footer() {
 
       <div className="footer__bar shell">
         <span className="footer__copy">{t.footer.copyright}</span>
-        <span className="footer__legal">
-          {t.footer.privacy} · {t.footer.terms}
-        </span>
+        <nav className="footer__legal" aria-label={t.footer.legalLabel}>
+          <Link href="/legal/notice">{t.footer.notice}</Link>
+          <span aria-hidden>·</span>
+          <Link href="/legal/privacy">{t.footer.privacy}</Link>
+          <span aria-hidden>·</span>
+          <Link href="/legal/cookies">{t.footer.cookies}</Link>
+        </nav>
       </div>
     </footer>
   );
