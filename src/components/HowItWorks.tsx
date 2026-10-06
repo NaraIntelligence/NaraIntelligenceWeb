@@ -4,15 +4,32 @@ import { useEffect, useRef } from "react";
 import { useLang } from "@/lib/lang-context";
 import { useScrollProgress } from "@/lib/use-scroll-progress";
 import { STEP_ICONS } from "./icons";
-import { ImagePlaceholder } from "./ImagePlaceholder";
 
-/** One visual per step. `null` = render still pending, show a placeholder. */
+/** One visual per step. `null` = no video yet: the step shows a typographic
+ *  card (its number and title) instead, crossfading exactly like a video. */
 const STEP_VIDEOS: (string | null)[] = [
   "/assets/step-contact.mp4",
   "/assets/step-audit.mp4",
   null,
   null,
 ];
+
+function StepCard({
+  n,
+  title,
+  active,
+}: {
+  n: string;
+  title: string;
+  active: boolean;
+}) {
+  return (
+    <div className={`steps__card${active ? " is-active" : ""}`} aria-hidden>
+      <span className="steps__card-n">{n}</span>
+      <span className="steps__card-title">{title}</span>
+    </div>
+  );
+}
 
 function StepVideo({ src, active }: { src: string; active: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
@@ -81,11 +98,11 @@ export function HowItWorks() {
               src ? (
                 <StepVideo key={src} src={src} active={activeStep === i} />
               ) : (
-                <ImagePlaceholder
-                  key={`slot-${i}`}
-                  className={`steps__slot${activeStep === i ? " is-active" : ""}`}
-                  variant="bare"
-                  label={String(i + 1).padStart(2, "0")}
+                <StepCard
+                  key={`card-${i}`}
+                  n={String(i + 1).padStart(2, "0")}
+                  title={t.stepList[i].title}
+                  active={activeStep === i}
                 />
               ),
             )}

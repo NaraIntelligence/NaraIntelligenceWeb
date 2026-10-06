@@ -658,7 +658,7 @@ p {
 
 /* No frame around the videos — they sit straight on the page's black. */
 .steps__video,
-.steps__slot {
+.steps__card {
   position: absolute;
   inset: 16%;
   width: 68%;
@@ -669,14 +669,55 @@ p {
   pointer-events: none;
 }
 
-.steps__slot {
+/* Stand-in for a step without a video: the step's own number, set huge,
+   over its title — the same type the rest of the page uses. */
+.steps__card {
   inset: 0;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+}
+
+.steps__card::before {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.07),
+    rgba(255, 255, 255, 0) 68%
+  );
+  pointer-events: none;
+}
+
+.steps__card-n {
+  position: relative;
+  font-size: clamp(120px, 15vw, 220px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  background: linear-gradient(180deg, #fafafa 0%, rgba(250, 250, 250, 0.18) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.steps__card-title {
+  position: relative;
+  font-size: 13px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .steps__video.is-active,
-.steps__slot.is-active {
+.steps__card.is-active {
   opacity: 1;
 }
 
@@ -885,21 +926,55 @@ p {
   overflow: hidden;
 }
 
-/* Sits under the photo, so a missing portrait still reads as a poster. */
+/* Sits under the photo, so a missing portrait still reads as a poster: a
+   lit monogram with the agent's name set beneath it, like a title card. */
 .poster-card__mark {
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 104px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: rgba(255, 255, 255, 0.07);
+  gap: 10px;
+  /* Lifted a little so the always-open caption on touch screens can't
+     cover it. */
+  padding-bottom: 22%;
+  background: radial-gradient(
+    120% 70% at 50% 18%,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0) 60%
+  );
 }
 
-.poster-card--director .poster-card__mark {
-  color: rgba(255, 255, 255, 0.13);
+.poster-card__initial {
+  font-size: 128px;
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.poster-card--director .poster-card__initial {
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+}
+
+.poster-card__monogram {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
 }
 
 .poster-card__photo {
@@ -1130,7 +1205,12 @@ p {
 
 .agent-sheet__art {
   position: relative;
-  background: var(--bg-slot);
+  background: radial-gradient(
+      120% 70% at 50% 20%,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0) 60%
+    ),
+    var(--bg-slot);
   border-right: 1px solid var(--line);
   min-height: 100%;
 }
@@ -1141,9 +1221,13 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 120px;
+  font-size: 140px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.08);
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.06));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .agent-sheet__photo {
@@ -2087,6 +2171,18 @@ p {
     height: 100%;
   }
 
+  .steps__card {
+    gap: 10px;
+  }
+
+  .steps__card-n {
+    font-size: 17vh;
+  }
+
+  .steps__card-title {
+    font-size: 12px;
+  }
+
   .step {
     padding: 12px 0;
     gap: 14px;
@@ -2207,8 +2303,12 @@ p {
     width: 176px;
   }
 
-  .poster-card__mark {
-    font-size: 72px;
+  .poster-card__initial {
+    font-size: 84px;
+  }
+
+  .poster-card__monogram {
+    font-size: 10px;
   }
 
   .poster-track {
@@ -2298,7 +2398,7 @@ p {
   }
 
   .steps__video,
-  .steps__slot,
+  .steps__card,
   .step,
   .step__title,
   .step__body {

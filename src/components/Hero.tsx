@@ -41,7 +41,7 @@ export function Hero() {
           muted
           playsInline
           preload="auto"
-          aria-label={t.hero.slotPlaceholder}
+          aria-label={t.hero.videoLabel}
         />
         <div className="hero__fade" />
       </div>
